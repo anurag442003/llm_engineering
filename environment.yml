@@ -1,10 +1,16 @@
 name: llms
 channels:
+  - pytorch
+  - nvidia
   - conda-forge
   - defaults
 dependencies:
   - python=3.11
   - pip
+  - pytorch
+  - pytorch-cuda=11.8
+  - torchvision
+  - torchaudio
   - python-dotenv
   - requests
   - beautifulsoup4
@@ -12,7 +18,6 @@ dependencies:
   - numpy
   - pandas
   - scipy
-  - pytorch
   - jupyterlab
   - ipywidgets
   - pyarrow
@@ -45,4 +50,3 @@ dependencies:
     - gensim
     - modal
     - ollama
-
