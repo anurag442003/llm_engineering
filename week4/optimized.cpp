@@ -1,51 +1,60 @@
+
 #include <iostream>
-#include <random>
+#include <vector>
+#include <limits> // Required for numeric_limits
 #include <chrono>
-#include <iomanip>
 
-// Function to generate random numbers using Mersenne Twister
-std::mt19937 gen(42);
 
-// Function to calculate maximum subarray sum
-int max_subarray_sum(int n, int min_val, int max_val) {
-    std::uniform_int_distribution<> dis(min_val, max_val);
-    int max_sum = std::numeric_limits<int>::min();
-    int current_sum = 0;
+// Linear congruential generator
+unsigned long long lcg(unsigned long long seed, unsigned long long a = 1664525, unsigned long long c = 1013904223, unsigned long long m = 4294967296ULL) {
+    return (a * seed + c) % m;
+}
+
+long long max_subarray_sum(int n, unsigned long long seed, long long min_val, long long max_val) {
+    std::vector<long long> random_numbers(n);
+    unsigned long long current_seed = seed;
     for (int i = 0; i < n; ++i) {
-        current_sum += dis(gen);
-        if (current_sum > max_sum) {
-            max_sum = current_sum;
-        }
-        if (current_sum < 0) {
-            current_sum = 0;
+        current_seed = lcg(current_seed);
+        random_numbers[i] = (long long)(current_seed % (max_val - min_val + 1)) + min_val;
+    }
+
+    long long max_sum = std::numeric_limits<long long>::min();
+    for (int i = 0; i < n; ++i) {
+        long long current_sum = 0;
+        for (int j = i; j < n; ++j) {
+            current_sum += random_numbers[j];
+            if (current_sum > max_sum) {
+                max_sum = current_sum;
+            }
         }
     }
     return max_sum;
 }
 
-// Function to calculate total maximum subarray sum
-int total_max_subarray_sum(int n, int initial_seed, int min_val, int max_val) {
-    gen.seed(initial_seed);
-    int total_sum = 0;
+long long total_max_subarray_sum(int n, unsigned long long initial_seed, long long min_val, long long max_val) {
+    long long total_sum = 0;
+    unsigned long long current_seed = initial_seed;
     for (int i = 0; i < 20; ++i) {
-        total_sum += max_subarray_sum(n, min_val, max_val);
+        current_seed = lcg(current_seed);
+        total_sum += max_subarray_sum(n, current_seed, min_val, max_val);
     }
     return total_sum;
 }
 
 int main() {
-    int n = 10000;         // Number of random numbers
-    int initial_seed = 42; // Initial seed for the Mersenne Twister
-    int min_val = -10;     // Minimum value of random numbers
-    int max_val = 10;      // Maximum value of random numbers
+    int n = 10000;
+    unsigned long long initial_seed = 42;
+    long long min_val = -10;
+    long long max_val = 10;
 
-    // Timing the function
-    auto start_time = std::chrono::high_resolution_clock::now();
-    int result = total_max_subarray_sum(n, initial_seed, min_val, max_val);
-    auto end_time = std::chrono::high_resolution_clock::now();
+    auto start = std::chrono::high_resolution_clock::now();
+    long long result = total_max_subarray_sum(n, initial_seed, min_val, max_val);
+    auto end = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+
 
     std::cout << "Total Maximum Subarray Sum (20 runs): " << result << std::endl;
-    std::cout << "Execution Time: " << std::setprecision(6) << std::fixed << std::chrono::duration<double>(end_time - start_time).count() << " seconds" << std::endl;
-
+    std::cout << "Execution Time: " << (double)duration.count() / 1000000 << " seconds" << std::endl;
     return 0;
 }
+
