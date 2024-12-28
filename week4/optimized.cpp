@@ -9,16 +9,17 @@ using namespace std;
 using namespace std::chrono;
 
 
+// Linear congruential generator
 unsigned long long lcg(unsigned long long seed, unsigned long long a = 1664525, unsigned long long c = 1013904223, unsigned long long m = 4294967296ULL) {
     return (a * seed + c) % m;
 }
 
-long long max_subarray_sum(int n, unsigned long long seed, long long min_val, long long max_val) {
+long long max_subarray_sum(int n, unsigned long long seed, int min_val, int max_val) {
     vector<long long> random_numbers(n);
     unsigned long long current_seed = seed;
     for (int i = 0; i < n; ++i) {
         current_seed = lcg(current_seed);
-        random_numbers[i] = (current_seed % (max_val - min_val + 1)) + min_val;
+        random_numbers[i] = (long long)((current_seed % (max_val - min_val + 1)) + min_val);
     }
 
     long long max_sum = numeric_limits<long long>::min();
@@ -34,7 +35,7 @@ long long max_subarray_sum(int n, unsigned long long seed, long long min_val, lo
     return max_sum;
 }
 
-long long total_max_subarray_sum(int n, unsigned long long initial_seed, long long min_val, long long max_val) {
+long long total_max_subarray_sum(int n, unsigned long long initial_seed, int min_val, int max_val) {
     long long total_sum = 0;
     unsigned long long current_seed = initial_seed;
     for (int i = 0; i < 20; ++i) {
@@ -47,8 +48,8 @@ long long total_max_subarray_sum(int n, unsigned long long initial_seed, long lo
 int main() {
     int n = 10000;
     unsigned long long initial_seed = 42;
-    long long min_val = -10;
-    long long max_val = 10;
+    int min_val = -10;
+    int max_val = 10;
 
     auto start = high_resolution_clock::now();
     long long result = total_max_subarray_sum(n, initial_seed, min_val, max_val);
