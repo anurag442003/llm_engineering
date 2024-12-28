@@ -1,0 +1,2 @@
+create gradio ui for day 5
+complete brochure generator with image embedding and audio.
