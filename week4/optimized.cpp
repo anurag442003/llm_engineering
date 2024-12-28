@@ -5,20 +5,23 @@
 #include <chrono>
 
 
-// Linear congruential generator
+using namespace std;
+using namespace std::chrono;
+
+
 unsigned long long lcg(unsigned long long seed, unsigned long long a = 1664525, unsigned long long c = 1013904223, unsigned long long m = 4294967296ULL) {
     return (a * seed + c) % m;
 }
 
 long long max_subarray_sum(int n, unsigned long long seed, long long min_val, long long max_val) {
-    std::vector<long long> random_numbers(n);
+    vector<long long> random_numbers(n);
     unsigned long long current_seed = seed;
     for (int i = 0; i < n; ++i) {
         current_seed = lcg(current_seed);
-        random_numbers[i] = (long long)(current_seed % (max_val - min_val + 1)) + min_val;
+        random_numbers[i] = (current_seed % (max_val - min_val + 1)) + min_val;
     }
 
-    long long max_sum = std::numeric_limits<long long>::min();
+    long long max_sum = numeric_limits<long long>::min();
     for (int i = 0; i < n; ++i) {
         long long current_sum = 0;
         for (int j = i; j < n; ++j) {
@@ -47,14 +50,13 @@ int main() {
     long long min_val = -10;
     long long max_val = 10;
 
-    auto start = std::chrono::high_resolution_clock::now();
+    auto start = high_resolution_clock::now();
     long long result = total_max_subarray_sum(n, initial_seed, min_val, max_val);
-    auto end = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+    auto stop = high_resolution_clock::now();
+    auto duration = duration_cast<microseconds>(stop - start);
 
+    cout << "Total Maximum Subarray Sum (20 runs): " << result << endl;
+    cout << "Execution Time: " << (double)duration.count() / 1000000 << " seconds" << endl;
 
-    std::cout << "Total Maximum Subarray Sum (20 runs): " << result << std::endl;
-    std::cout << "Execution Time: " << (double)duration.count() / 1000000 << " seconds" << std::endl;
     return 0;
 }
-
