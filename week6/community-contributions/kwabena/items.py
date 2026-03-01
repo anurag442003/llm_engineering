@@ -2,7 +2,7 @@ from typing import Optional
 from transformers import AutoTokenizer
 import re
 
-BASE_MODEL = "meta-llama/Meta-Llama-3.1-8B"
+BASE_MODEL_PATH = r"C:\Users\anura\.llama\checkpoints\Llama3.1-8B"
 
 MIN_TOKENS = 150 # Any less than this, and we don't have enough useful content
 MAX_TOKENS = 160 # Truncate after this many tokens. Then after adding in prompt text, we will get to around 180 tokens
@@ -15,7 +15,7 @@ class Item:
     An Item is a cleaned, curated datapoint of a Product with a Price
     """
     
-    tokenizer = AutoTokenizer.from_pretrained(BASE_MODEL, trust_remote_code=True)
+    tokenizer = AutoTokenizer.from_pretrained(BASE_MODEL_PATH, trust_remote_code=True)
     PREFIX = "Price is $"
     QUESTION = "How much does this cost to the nearest dollar?"
     REMOVALS = ['"Batteries Included?": "No"', '"Batteries Included?": "Yes"', '"Batteries Required?": "No"', '"Batteries Required?": "Yes"', "By Manufacturer", "Item", "Date First", "Package", ":", "Number of", "Best Sellers", "Number", "Product "]

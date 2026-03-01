@@ -3,7 +3,7 @@ from typing import List, Dict
 from openai import OpenAI
 from sentence_transformers import SentenceTransformer
 from agents.agent import Agent
-
+from dotenv import load_dotenv
 
 class FrontierAgent(Agent):
     name = "Frontier Agent"
@@ -13,9 +13,10 @@ class FrontierAgent(Agent):
 
     def __init__(self, collection):
         """
-        Set up this instance by connecting to OpenAI or DeepSeek, to the Chroma Datastore,
+        Set up this instance by connecting to Llama, to the Chroma Datastore,
         And setting up the vector encoding model
         """
+        load_dotenv(override=True)
         self.log("Initializing Frontier Agent")
         self.client = OpenAI()
         self.MODEL = "gpt-5.1"
@@ -75,7 +76,7 @@ class FrontierAgent(Agent):
 
     def price(self, description: str) -> float:
         """
-        Make a call to OpenAI or DeepSeek to estimate the price of the described product,
+        Make a call to Llama to estimate the price of the described product,
         by looking up 5 similar products and including them in the prompt to give context
         :param description: a description of the product
         :return: an estimate of the price

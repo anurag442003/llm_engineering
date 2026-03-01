@@ -4,6 +4,8 @@ from agents.deals import ScrapedDeal, DealSelection, Deal, Opportunity
 from agents.scanner_agent import ScannerAgent
 from agents.ensemble_agent import EnsembleAgent
 from agents.messaging_agent import MessagingAgent
+from dotenv import load_dotenv
+import os
 
 
 class PlanningAgent(Agent):
@@ -11,13 +13,19 @@ class PlanningAgent(Agent):
     name = "Planning Agent"
     color = Agent.GREEN
     DEAL_THRESHOLD = 50
+    MODEL = "gemini-2.0-flash"
 
     def __init__(self, collection):
         """
         Create instances of the 3 Agents that this planner coordinates across
         """
+        load_dotenv(override=True)
+        self.gemini_key = os.getenv('GEMINI_API_KEY')
+        if self.gemini_key is None:
+            raise ValueError("GEMINI_API_KEY environment variable is not set")
         self.log("Planning Agent is initializing")
         self.scanner = ScannerAgent()
+        self.log("scanning Agent is initializing")
         self.ensemble = EnsembleAgent(collection)
         self.messenger = MessagingAgent()
         self.log("Planning Agent is ready")

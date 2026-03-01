@@ -2,7 +2,7 @@ from typing import Optional, List
 from openai import OpenAI
 from agents.deals import ScrapedDeal, DealSelection
 from agents.agent import Agent
-
+from dotenv import load_dotenv
 
 class ScannerAgent(Agent):
     MODEL = "gpt-5-mini"
@@ -31,8 +31,12 @@ class ScannerAgent(Agent):
         """
         Set up this instance by initializing OpenAI
         """
+        load_dotenv(override=True)
+        self.gemini_key = os.getenv('GEMINI_API_KEY')
+        if self.gemini_key is None:
+            raise ValueError("GEMINI_API_KEY environment variable is not set")
         self.log("Scanner Agent is initializing")
-        self.openai = OpenAI()
+        self.gemini_openai = OpenAI(api_key=self.gemini_key, base_url="https://generativelanguage.googleapis.com/v1beta")
         self.log("Scanner Agent is ready")
 
     def fetch_deals(self, memory) -> List[ScrapedDeal]:

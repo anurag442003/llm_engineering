@@ -1,0 +1,8 @@
+Four steps in training:
+1. Forward pass: predict the next token in rtraining data
+2. loss calculation: diffence with ground truth
+3. back propagation: how much should we tweak the parameters to do better next time (gradients).
+4. optimization: update params a tiny step to do better next.
+
+- When we say we predict the next tokem we mean the model output probablities and during inference we pick the token with the highest probablity token.
+

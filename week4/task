@@ -1,0 +1,8 @@
+using an opensource llm or gemini create a code converter. Use gradio using
+it should take code input in one language and convert the code in the other language selected
+coding languages preferably: python, c, c++, java
+refer deeply: https://github.com/alakob/ai_code_converter
+figure out the architecture and design on how to do it
+modify parameters of function to taken in options of languages for input and output code. 
+accordingly modify the system and user prompts to adapt to languages.
+figure out execution of code.

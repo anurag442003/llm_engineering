@@ -1,0 +1,61 @@
+create am architecture diagram of langchain connectiing llm
+understand what each element does:
+debug to understand what's being passed.
+
+1. Document Collection and Preparation
+First, the application gathers information about Insurellm (the company) from various sources. The code is scanning through a folder called "knowledge-base" which contains different subfolders:
+
+Products folder: Information about insurance products offered
+Employees folder: Details about company personnel
+Contracts folder: Information about insurance contracts
+Company folder: General company information
+
+The system reads all Markdown (.md) files in these folders and adds a label (metadata) to each document indicating which folder it came from.
+Then, it breaks these documents into smaller chunks (of 1000 characters each) with some overlap (200 characters) between chunks. This overlap helps maintain context between chunks. Think of it like scanning pages of a book with some overlap between scans to ensure no sentence gets cut off.
+2. Converting Text to Numbers (Embeddings)
+Computers don't understand text like humans do, so we need to convert text to numbers. This is done using a mathematical technique called "embeddings":
+
+The app uses a Hugging Face model called "nomic-embed-text-v2-moe" to convert each text chunk into a list of numbers (a vector).
+Each vector has many dimensions (as shown in the code: dimensions = len(sample_embedding))
+Similar text produces similar vectors, which is the key to finding relevant information later.
+
+Think of it as giving each text chunk its own unique "fingerprint" of numbers that captures its meaning.
+Semantic Understanding: Good embedding models capture the meaning of text, not just keywords. For example, "insurance policy" and "coverage plan" might have similar vectors because they have similar meanings.
+
+
+3. Storing Data in a Vector Database
+All these numerical "fingerprints" are stored in a vector database called Chroma:
+
+Chroma is like a specialized filing cabinet for these numerical representations
+It organizes them so similar vectors are easy to find
+The code creates visualizations of these vectors in 2D and 3D space, showing how different document types cluster together
+
+4. The RAG Process When a Question is Asked
+When you ask a question through the Gradio interface:
+
+Query Processing: Your question is converted into the same kind of numerical vector as the documents.
+Retrieval: The system searches the Chroma database for document chunks whose vectors are most similar to your question's vector. These are the most relevant pieces of information:
+pythonretriever = vectorstore.as_retriever(search_kwargs={"k": 25})
+The parameter k=25 means it retrieves the top 25 most relevant chunks.
+Context Assembly: The system takes these relevant text chunks and packages them as context.
+Augmented Generation: The language model (Gemini in this case) receives:
+
+Your original question
+The relevant context from step 3
+Previous conversation history from memory
+
+It then generates an answer based on this information. This is the "augmented" part of RAG - the generation is augmented with retrieved information.
+Response: The answer is sent back to you through the Gradio interface.
+
+5. Conversation Memory
+The application maintains memory of the conversation:
+pythonmemory = ConversationBufferMemory(memory_key='chat_history', return_messages=True)
+This allows for follow-up questions. For example:
+
+You: "What insurance products does Insurellm offer?"
+AI answers with information about products
+You: "Which one is the most popular?"
+AI understands "one" refers to insurance products from the previous question.
+
+Cost Considerations
+The code shows consideration for cost by using Gemini-2.0-flash, which is specifically mentioned as a "low cost model." This makes the solution more affordable than using more expensive models like GPT-4.

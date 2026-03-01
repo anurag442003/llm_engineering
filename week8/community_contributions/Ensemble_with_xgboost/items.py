@@ -95,7 +95,5 @@ class Item:
         """
         return f"<{self.title} = ${self.price}>"
 
-        
 
-    
     
